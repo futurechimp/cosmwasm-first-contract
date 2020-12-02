@@ -207,4 +207,106 @@ mod tests {
         assert_eq!(coins(1, "BTC"), res.collateral);
         assert_eq!(coins(40, "ETH"), res.counter_offer);
     }
+
+    #[test]
+    fn transfer() {
+        let mut deps = mock_dependencies(20, &[]);
+
+        let msg = InitMsg {
+            counter_offer: coins(40, "ETH"),
+            expires: 100_000,
+        };
+        let env = mock_env("creator", &coins(1, "BTC"));
+
+        let res = init(&mut deps, env, msg).unwrap();
+        assert_eq!(0, res.messages.len());
+
+        // random cannot transfer
+        let env = mock_env("anyone", &[]);
+        let err = handle_transfer(&mut deps, env, HumanAddr::from("anyone")).unwrap_err();
+        match err {
+            StdError::Unauthorized { .. } => {}
+            e => panic!("unexpected error: {}", e),
+        }
+
+        // owner can transfer
+        let env = mock_env("creator", &[]);
+        let res = handle_transfer(&mut deps, env, HumanAddr::from("someone")).unwrap();
+        assert_eq!(res.log.len(), 2);
+        assert_eq!(res.log[0], log("action", "transfer"));
+
+        // check updated properly
+        let res = query_config(&deps).unwrap();
+        assert_eq!("someone", res.owner.as_str());
+        assert_eq!("creator", res.creator.as_str());
+    }
+
+    #[test]
+    fn execute() {
+        let mut deps = mock_dependencies(20, &[]);
+
+        let counter_offer = coins(40, "ETH");
+        let collateral = coins(1, "BTC");
+        let msg = InitMsg {
+            counter_offer: counter_offer.clone(),
+            expires: 100_000,
+        };
+        let env = mock_env("creator", &collateral);
+
+        let _ = init(&mut deps, env, msg).unwrap();
+
+        // set new owner
+        let env = mock_env("creator", &[]);
+        let _ = handle_transfer(&mut deps, env, HumanAddr::from("owner")).unwrap();
+
+        // random cannot execute
+        let env = mock_env("creator", &counter_offer);
+        let err = handle_execute(&mut deps, env).unwrap_err();
+        match err {
+            StdError::Unauthorized { .. } => {}
+            e => panic!("unexpected error: {}", e),
+        }
+
+        // expired cannot execute
+        let mut env = mock_env("owner", &counter_offer);
+        env.block.height = 200_000;
+        let err = handle_execute(&mut deps, env).unwrap_err();
+        match err {
+            StdError::GenericErr { msg, .. } => assert_eq!("option expired", msg.as_str()),
+            e => panic!("unexpected error: {}", e),
+        }
+
+        // bad counter offer cannot execute
+        let env = mock_env("owner", &coins(39, "ETH"));
+        let err = handle_execute(&mut deps, env).unwrap_err();
+        match err {
+            StdError::GenericErr { msg, .. } => assert!(msg.contains("counter offer")),
+            e => panic!("unexpected error: {}", e),
+        }
+
+        // proper execution
+        let env = mock_env("owner", &counter_offer);
+        let res = handle_execute(&mut deps, env).unwrap();
+        assert_eq!(res.messages.len(), 2);
+        assert_eq!(
+            res.messages[0],
+            CosmosMsg::Bank(BankMsg::Send {
+                from_address: MOCK_CONTRACT_ADDR.into(),
+                to_address: "creator".into(),
+                amount: counter_offer,
+            })
+        );
+
+        assert_eq!(
+            res.messages[1],
+            CosmosMsg::Bank(BankMsg::Send {
+                from_address: MOCK_CONTRACT_ADDR.into(),
+                to_address: "owner".into(),
+                amount: collateral,
+            })
+        );
+
+        // check deleted
+        let _ = query_config(&deps).unwrap_err();
+    }
 }
