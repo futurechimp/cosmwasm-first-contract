@@ -1,3 +1,7 @@
+# What is this
+
+DH: this is my first attempt at a CosmWasm smart contract. It's nothing special, just the implementation of a simple option from the CosmWasm website.
+
 # CosmWasm Starter Pack
 
 This is a template to build smart contracts in Rust to run inside a

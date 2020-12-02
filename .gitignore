@@ -13,3 +13,7 @@
 # IDEs
 *.iml
 .idea
+/artifacts/checksums.txt
+/artifacts/first_attempt.wasm
+/contract.wasm
+/hash.txt
