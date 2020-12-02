@@ -169,3 +169,42 @@ fn query_config<S: Storage, A: Api, Q: Querier>(
     Ok(state)
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use cosmwasm_std::testing::{mock_dependencies, mock_env, MOCK_CONTRACT_ADDR};
+    use cosmwasm_std::{coins, log, CosmosMsg};
+
+    #[test]
+    fn proper_initialization() {
+        /*
+         * mock dependencies
+         * first input is canonical address length
+         * and the second is the initial fund in the contract
+         */
+        let mut deps = mock_dependencies(20, &[]);
+
+        let msg = InitMsg {
+            counter_offer: coins(40, "ETH"),
+            expires: 100_000,
+        };
+
+        /*
+         * mock execution environment
+         * first is sender address, second is  the funds sent in the message
+         */
+        let env = mock_env("creator", &coins(1, "BTC"));
+
+        // we can just call .unwrap() to assert this was a success
+        let res = init(&mut deps, env, msg).unwrap();
+        assert_eq!(0, res.messages.len());
+
+        // it worked, let's query the state
+        let res = query_config(&deps).unwrap();
+        assert_eq!(100_000, res.expires);
+        assert_eq!("creator", res.owner.as_str());
+        assert_eq!("creator", res.creator.as_str());
+        assert_eq!(coins(1, "BTC"), res.collateral);
+        assert_eq!(coins(40, "ETH"), res.counter_offer);
+    }
+}
