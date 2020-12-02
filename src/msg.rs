@@ -1,27 +1,29 @@
+use cosmwasm_std::{Coin, HumanAddr};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct InitMsg {
-    pub count: i32,
+    // owner and creator come from env
+    // collateral comes from env
+    pub counter_offer: Vec<Coin>,
+    pub expires: u64,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum HandleMsg {
-    Increment {},
-    Reset { count: i32 },
+    // Owner can transfer to a new owner
+    Transfer { recipient: HumanAddr },
+    // Owner can post counter_offer on unexpired option to execute and get the collateral
+    Execute {},
+    // Burn will release collateral if expired
+    Burn {},
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum QueryMsg {
     // GetCount returns the current count as a json-encoded number
-    GetCount {},
-}
-
-// We define a custom struct for each query response
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-pub struct CountResponse {
-    pub count: i32,
+    Config {},
 }

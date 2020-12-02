@@ -5,10 +5,29 @@
     {
       "type": "object",
       "required": [
-        "increment"
+        "transfer"
       ],
       "properties": {
-        "increment": {
+        "transfer": {
+          "type": "object",
+          "required": [
+            "recipient"
+          ],
+          "properties": {
+            "recipient": {
+              "$ref": "#/definitions/HumanAddr"
+            }
+          }
+        }
+      }
+    },
+    {
+      "type": "object",
+      "required": [
+        "execute"
+      ],
+      "properties": {
+        "execute": {
           "type": "object"
         }
       }
@@ -16,22 +35,18 @@
     {
       "type": "object",
       "required": [
-        "reset"
+        "burn"
       ],
       "properties": {
-        "reset": {
-          "type": "object",
-          "required": [
-            "count"
-          ],
-          "properties": {
-            "count": {
-              "type": "integer",
-              "format": "int32"
-            }
-          }
+        "burn": {
+          "type": "object"
         }
       }
     }
-  ]
+  ],
+  "definitions": {
+    "HumanAddr": {
+      "type": "string"
+    }
+  }
 }

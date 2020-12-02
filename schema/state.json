@@ -3,25 +3,58 @@
   "title": "State",
   "type": "object",
   "required": [
-    "count",
+    "collateral",
+    "counter_offer",
+    "creator",
+    "expires",
     "owner"
   ],
   "properties": {
-    "count": {
+    "collateral": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Coin"
+      }
+    },
+    "counter_offer": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Coin"
+      }
+    },
+    "creator": {
+      "$ref": "#/definitions/HumanAddr"
+    },
+    "expires": {
       "type": "integer",
-      "format": "int32"
+      "format": "uint64",
+      "minimum": 0.0
     },
     "owner": {
-      "$ref": "#/definitions/CanonicalAddr"
+      "$ref": "#/definitions/HumanAddr"
     }
   },
   "definitions": {
-    "Binary": {
-      "description": "Binary is a wrapper around Vec<u8> to add base64 de/serialization with serde. It also adds some helper methods to help encode inline.\n\nThis is only needed as serde-json-{core,wasm} has a horrible encoding for Vec<u8>",
+    "Coin": {
+      "type": "object",
+      "required": [
+        "amount",
+        "denom"
+      ],
+      "properties": {
+        "amount": {
+          "$ref": "#/definitions/Uint128"
+        },
+        "denom": {
+          "type": "string"
+        }
+      }
+    },
+    "HumanAddr": {
       "type": "string"
     },
-    "CanonicalAddr": {
-      "$ref": "#/definitions/Binary"
+    "Uint128": {
+      "type": "string"
     }
   }
 }

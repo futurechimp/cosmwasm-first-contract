@@ -3,12 +3,40 @@
   "title": "InitMsg",
   "type": "object",
   "required": [
-    "count"
+    "counter_offer",
+    "expires"
   ],
   "properties": {
-    "count": {
+    "counter_offer": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Coin"
+      }
+    },
+    "expires": {
       "type": "integer",
-      "format": "int32"
+      "format": "uint64",
+      "minimum": 0.0
+    }
+  },
+  "definitions": {
+    "Coin": {
+      "type": "object",
+      "required": [
+        "amount",
+        "denom"
+      ],
+      "properties": {
+        "amount": {
+          "$ref": "#/definitions/Uint128"
+        },
+        "denom": {
+          "type": "string"
+        }
+      }
+    },
+    "Uint128": {
+      "type": "string"
     }
   }
 }
