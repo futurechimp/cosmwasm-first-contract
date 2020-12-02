@@ -153,34 +153,6 @@ pub fn handle_transfer<S: Storage, A: Api, Q: Querier>(
     Ok(res.into())
 }
 
-// pub fn try_increment<S: Storage, A: Api, Q: Querier>(
-//     deps: &mut Extern<S, A, Q>,
-//     _env: Env,
-// ) -> StdResult<HandleResponse> {
-//     config(&mut deps.storage).update(|mut state| {
-//         state.count += 1;
-//         Ok(state)
-//     })?;
-
-//     Ok(HandleResponse::default())
-// }
-
-// pub fn try_reset<S: Storage, A: Api, Q: Querier>(
-//     deps: &mut Extern<S, A, Q>,
-//     env: Env,
-//     count: i32,
-// ) -> StdResult<HandleResponse> {
-//     let api = &deps.api;
-//     config(&mut deps.storage).update(|mut state| {
-//         if api.canonical_address(&env.message.sender)? != state.owner {
-//             return Err(StdError::unauthorized());
-//         }
-//         state.count = count;
-//         Ok(state)
-//     })?;
-//     Ok(HandleResponse::default())
-// }
-
 pub fn query<S: Storage, A: Api, Q: Querier>(
     deps: &Extern<S, A, Q>,
     msg: QueryMsg,
