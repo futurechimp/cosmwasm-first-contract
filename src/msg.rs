@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 pub struct InitMsg {
     // owner and creator come from env
     // collateral comes from env
-    pub counter_offer: Vec<Coin>,
+    pub counteroffer: Vec<Coin>,
     pub expires: u64,
 }
 
