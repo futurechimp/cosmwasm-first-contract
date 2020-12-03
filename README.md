@@ -2,6 +2,16 @@
 
 DH: this is my first attempt at a CosmWasm smart contract. It's nothing special, just the implementation of a simple option from the CosmWasm website.
 
+## Building it
+
+```
+docker run --rm -v "$(pwd)":/code \
+  --mount type=volume,source="$(basename "$(pwd)")_cache",target=/code/target \
+  --mount type=volume,source=registry_cache,target=/usr/local/cargo/registry \
+  cosmwasm/rust-optimizer:0.9.0
+```
+
+
 # CosmWasm Starter Pack
 
 This is a template to build smart contracts in Rust to run inside a
