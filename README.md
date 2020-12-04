@@ -42,10 +42,10 @@ const up = await client.upload(wasm, { builder: "cosmwasm/rust-optimizer:0.9.0"}
 
 console.log(up);
 const { codeId } = up;
-const initMsg = {counter_offer: [{amount: "40", denom: "ETH"}], expires: 2000000};
+const initMsg = {counter_offer: [{amount: "40", denom: "ushell"}], expires: 2000000};
 
 // wait for this to finish 
-const { contractAddress } = await client.instantiate(codeId, initMsg, "Simple option", { memo: "memo", transferAmount: [{denom: "ushell", amount: "500000"}]});
+const { contractAddress } = await client.instantiate(codeId, initMsg, "Simple option", { memo: "memo", transferAmount: [{denom: "ushell", amount: "5000"}]});
 
 console.log(contractAddress);
 
@@ -63,9 +63,8 @@ JSON.parse(fromUtf8(raw))
 const burn = {burn:{}};
 client.execute(contractAddress, burn);
 
-
-// TODO: I haven't yet got this one working, it tells me I need to match the exact strike price - I must be specifying the format slightly incorrectly.
-const bid = {execute: {counter_offer: [{denom: "ETH", amount: "40"}]}};
-client.execute(contractAddress, bid);
+// To execute on the option, send an `execute` message along with funds to match the option strike price
+const bid = {execute: {}};
+client.execute(contractAddress, {execute:{}}, "memo",  [{denom: "ushell", amount: "40"}]);
 ```
 
