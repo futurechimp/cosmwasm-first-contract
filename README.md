@@ -1,6 +1,6 @@
 # What is this
 
-DH: this is my first attempt at a CosmWasm smart contract. It's nothing special, just the implementation of a simple option from the CosmWasm website.
+A first attempt at a CosmWasm smart contract. It's nothing special, just the implementation of a simple option from the CosmWasm website.
 
 ## Building it
 
@@ -11,94 +11,56 @@ docker run --rm -v "$(pwd)":/code \
   cosmwasm/rust-optimizer:0.9.0
 ```
 
+## Simplistic run in console
 
-# CosmWasm Starter Pack
+Start the console:
 
-This is a template to build smart contracts in Rust to run inside a
-[Cosmos SDK](https://github.com/cosmos/cosmos-sdk) module on all chains that enable it.
-To understand the framework better, please read the overview in the
-[cosmwasm repo](https://github.com/CosmWasm/cosmwasm/blob/master/README.md),
-and dig into the [cosmwasm docs](https://www.cosmwasm.com).
-This assumes you understand the theory and just want to get coding.
-
-## Creating a new repo from template
-
-Assuming you have a recent version of rust and cargo installed (via [rustup](https://rustup.rs/)),
-then the following should get you a new repo to start a contract:
-
-First, install
-[cargo-generate](https://github.com/ashleygwilliams/cargo-generate).
-Unless you did that before, run this line now:
-
-```sh
-cargo install cargo-generate --features vendored-openssl
+```
+npx @cosmjs/cli@^0.22 --init https://raw.githubusercontent.com/CosmWasm/testnets/master/coralnet/cli_helper.ts 
 ```
 
-Now, use it to create your new contract.
-Go to the folder in which you want to place it and run:
+In the console, execute the following commands. 
 
-**0.10 (latest)**
+You'll need to do it line by line, as anything marked `await` won't really wait in console mode. 
 
-```sh
-cargo generate --git https://github.com/CosmWasm/cosmwasm-template.git --name PROJECT_NAME
 ```
+const seed = loadOrCreateMnemonic("fred.key");
+const {address: fredAddr, client: client} = await connect(seed, {});
 
-**0.9**
+ // wait for this to finish 
+let account = await client.getAccount() // make sure we've got funds in the account
 
-```sh
-cargo generate --git https://github.com/CosmWasm/cosmwasm-template.git --branch 0.9 --name PROJECT_NAME
+console.log(account.balance) // make sure there's some cash available
+const wasm = fs.readFileSync('contract.wasm');
+
+// wait for this to finish 
+const up = await client.upload(wasm, { builder: "cosmwasm/rust-optimizer:0.9.0"}); // upload the contract
+
+console.log(up);
+const { codeId } = up;
+const initMsg = {counteroffer: [{amount: "40", denom: "ETH"}], expires: 2000000};
+
+// wait for this to finish 
+const { contractAddress } = await client.instantiate(codeId, initMsg, "Simple option", { memo: "memo", transferAmount: [{denom: "ushell", amount: "500000"}]});
+
+console.log(contractAddress);
+
+client.getContract(contractAddress)
+client.getAccount(contractAddress)
+
+const key = new Uint8Array([0, 6, ...toAscii("config")]);
+
+// wait for this to finish 
+const raw = await client.queryContractRaw(contractAddress, key);
+JSON.parse(fromUtf8(raw))
+
+
+// TODO:
+const bid4 = {execute: {counteroffer: [{denom: "ETH", amount: "40"}]}};
+client.execute(contractAddress, bid4);
+
+// I think this works, but we will need to try one with an expired option to really check it
+const burn = {burn:{}};
+client.execute(contractAddress, burn);
+
 ```
-
-**0.8**
-
-```sh
-cargo generate --git https://github.com/CosmWasm/cosmwasm-template.git --branch 0.8 --name PROJECT_NAME
-```
-
-You will now have a new folder called `PROJECT_NAME` (I hope you changed that to something else)
-containing a simple working contract and build system that you can customize.
-
-## Create a Repo
-
-After generating, you have a initialized local git repo, but no commits, and no remote.
-Go to a server (eg. github) and create a new upstream repo (called `YOUR-GIT-URL` below).
-Then run the following:
-
-```sh
-# this is needed to create a valid Cargo.lock file (see below)
-cargo check
-git checkout -b master # in case you generate from non-master
-git add .
-git commit -m 'Initial Commit'
-git remote add origin YOUR-GIT-URL
-git push -u origin master
-```
-
-## CI Support
-
-We have template configurations for both [GitHub Actions](.github/workflows/Basic.yml)
-and [Circle CI](.circleci/config.yml) in the generated project, so you can
-get up and running with CI right away.
-
-One note is that the CI runs all `cargo` commands
-with `--locked` to ensure it uses the exact same versions as you have locally. This also means
-you must have an up-to-date `Cargo.lock` file, which is not auto-generated.
-The first time you set up the project (or after adding any dep), you should ensure the
-`Cargo.lock` file is updated, so the CI will test properly. This can be done simply by
-running `cargo check` or `cargo unit-test`.
-
-## Using your project
-
-Once you have your custom repo, you should check out [Developing](./Developing.md) to explain
-more on how to run tests and develop code. Or go through the
-[online tutorial](https://www.cosmwasm.com/docs/getting-started/intro) to get a better feel
-of how to develop.
-
-[Publishing](./Publishing.md) contains useful information on how to publish your contract
-to the world, once you are ready to deploy it on a running blockchain. And
-[Importing](./Importing.md) contains information about pulling in other contracts or crates
-that have been published.
-
-Please replace this README file with information about your specific project. You can keep
-the `Developing.md` and `Publishing.md` files as useful referenced, but please set some
-proper description in the README.
