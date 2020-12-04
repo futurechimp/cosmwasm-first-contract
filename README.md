@@ -34,6 +34,9 @@ const {address: fredAddr, client: client} = await connect(seed, {});
  // wait for this to finish 
 let account = await client.getAccount() // make sure we've got funds in the account
 
+// if you don't have enough funds:
+hitFaucet(defaultFaucetUrl, fredAddr, "SHELL");
+
 console.log(account.balance) // make sure there's some cash available
 const wasm = fs.readFileSync('contract.wasm');
 
