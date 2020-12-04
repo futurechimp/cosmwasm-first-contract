@@ -56,8 +56,8 @@ JSON.parse(fromUtf8(raw))
 
 
 // TODO:
-const bid4 = {execute: {counteroffer: [{denom: "ETH", amount: "40"}]}};
-client.execute(contractAddress, bid4);
+const bid = {execute: {counter_offer: [{denom: "ETH", amount: "40"}]}};
+client.execute(contractAddress, bid);
 
 // I think this works, but we will need to try one with an expired option to really check it
 const burn = {burn:{}};
