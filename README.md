@@ -2,6 +2,8 @@
 
 A first attempt at a CosmWasm smart contract. It's nothing special, just the implementation of a simple option from the CosmWasm website.
 
+I wanted to try out contract upload and instantiation myself, to see if I understood the process. These are the commands I've used thus far, and the result. 
+
 ## Building it
 
 ```
@@ -21,7 +23,7 @@ npx @cosmjs/cli@^0.22 --init https://raw.githubusercontent.com/CosmWasm/testnets
 
 In the console, execute the following commands. 
 
-You'll need to do it line by line, as anything marked `await` won't really wait in console mode. 
+You'll need to do it line by line, as anything marked `await` won't wait in console mode. 
 
 ```
 const seed = loadOrCreateMnemonic("fred.key");
