@@ -22,7 +22,7 @@ pub fn init<S: Storage, A: Api, Q: Querier>(
         creator: env.message.sender.clone(),
         owner: env.message.sender.clone(),
         collateral: env.message.sent_funds,
-        counter_offer: msg.counteroffer,
+        counter_offer: msg.counter_offer,
         expires: msg.expires,
     };
     config(&mut deps.storage).save(&state)?;
@@ -185,7 +185,7 @@ mod tests {
         let mut deps = mock_dependencies(20, &[]);
 
         let msg = InitMsg {
-            counteroffer: coins(40, "ETH"),
+            counter_offer: coins(40, "ETH"),
             expires: 100_000,
         };
 
@@ -213,7 +213,7 @@ mod tests {
         let mut deps = mock_dependencies(20, &[]);
 
         let msg = InitMsg {
-            counteroffer: coins(40, "ETH"),
+            counter_offer: coins(40, "ETH"),
             expires: 100_000,
         };
         let env = mock_env("creator", &coins(1, "BTC"));
@@ -248,7 +248,7 @@ mod tests {
         let counter_offer = coins(40, "ETH");
         let collateral = coins(1, "BTC");
         let msg = InitMsg {
-            counteroffer: counter_offer.clone(),
+            counter_offer: counter_offer.clone(),
             expires: 100_000,
         };
         let env = mock_env("creator", &collateral);
