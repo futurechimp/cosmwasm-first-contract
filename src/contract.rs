@@ -91,8 +91,8 @@ pub fn handle_execute<S: Storage, A: Api, Q: Querier>(
     // ensure sending proper counter_offer
     if env.message.sent_funds != state.counter_offer {
         return Err(StdError::generic_err(format!(
-            "must send exact counter offer: {:?}",
-            state.counter_offer
+            "must send exact counter offer: {:?}, got: {:?}",
+            state.counter_offer, env.message.sent_funds,
         )));
     }
 
