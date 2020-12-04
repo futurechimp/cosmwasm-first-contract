@@ -55,30 +55,13 @@ const raw = await client.queryContractRaw(contractAddress, key);
 JSON.parse(fromUtf8(raw))
 
 
-// TODO:
-const bid = {execute: {counter_offer: [{denom: "ETH", amount: "40"}]}};
-client.execute(contractAddress, bid);
-
-// I think this works, but we will need to try one with an expired option to really check it
+// This works, but you need to instantiate a contract with expire quite soon in the future (use `client.getHeight()`) before you try it
 const burn = {burn:{}};
 client.execute(contractAddress, burn);
 
-```
 
-
-
-let seed = loadOrCreateMnemonic("fred.key");
-let {address: fredAddr, client: client} = await connect(seed, {});
-
-// client.getHeight();
-
-let codeId = 190;
-const contractAddress = "coral1ymnrtqdqleaukd70fv9454czhc2hplfrmzcdaj";
-
-let initMsg = {counteroffer: [{amount: "40", denom: "ETH"}], expires: 1809759};
-let { contractAddress } = await client.instantiate(codeId, initMsg, "Simple option", { memo: "memo", transferAmount: [{denom: "ushell", amount: "500000"}]});
-
-
-
+// TODO: I haven't yet got this one working, it tells me I need to match the exact strike price - I must be specifying the format slightly incorrectly.
 const bid = {execute: {counter_offer: [{denom: "ETH", amount: "40"}]}};
 client.execute(contractAddress, bid);
+```
+
