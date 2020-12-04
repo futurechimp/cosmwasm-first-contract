@@ -87,7 +87,7 @@ pub fn handle_execute<S: Storage, A: Api, Q: Querier>(
         return Err(StdError::generic_err("option expired"));
     }
 
-    // env.message.send_funds is the coins sent along the tx.
+    // env.message.sent_funds is the coins sent along the tx.
     // ensure sending proper counter_offer
     if env.message.sent_funds != state.counter_offer {
         return Err(StdError::generic_err(format!(
