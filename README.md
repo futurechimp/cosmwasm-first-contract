@@ -64,3 +64,21 @@ const burn = {burn:{}};
 client.execute(contractAddress, burn);
 
 ```
+
+
+
+let seed = loadOrCreateMnemonic("fred.key");
+let {address: fredAddr, client: client} = await connect(seed, {});
+
+// client.getHeight();
+
+let codeId = 190;
+const contractAddress = "coral1ymnrtqdqleaukd70fv9454czhc2hplfrmzcdaj";
+
+let initMsg = {counteroffer: [{amount: "40", denom: "ETH"}], expires: 1809759};
+let { contractAddress } = await client.instantiate(codeId, initMsg, "Simple option", { memo: "memo", transferAmount: [{denom: "ushell", amount: "500000"}]});
+
+
+
+const bid = {execute: {counter_offer: [{denom: "ETH", amount: "40"}]}};
+client.execute(contractAddress, bid);
