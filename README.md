@@ -6,6 +6,8 @@ I wanted to try out contract upload and instantiation myself, to see if I unders
 
 ## Building it
 
+In order to debug things effectively (and as a safety habit), it seems good to get used to running reproducible builds when uploading to the chain. So we use the following Docker command for building:
+
 ```
 docker run --rm -v "$(pwd)":/code \
   --mount type=volume,source="$(basename "$(pwd)")_cache",target=/code/target \
