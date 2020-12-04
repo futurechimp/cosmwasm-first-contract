@@ -38,7 +38,7 @@ const up = await client.upload(wasm, { builder: "cosmwasm/rust-optimizer:0.9.0"}
 
 console.log(up);
 const { codeId } = up;
-const initMsg = {counteroffer: [{amount: "40", denom: "ETH"}], expires: 2000000};
+const initMsg = {counter_offer: [{amount: "40", denom: "ETH"}], expires: 2000000};
 
 // wait for this to finish 
 const { contractAddress } = await client.instantiate(codeId, initMsg, "Simple option", { memo: "memo", transferAmount: [{denom: "ushell", amount: "500000"}]});
