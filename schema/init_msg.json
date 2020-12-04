@@ -3,11 +3,11 @@
   "title": "InitMsg",
   "type": "object",
   "required": [
-    "counteroffer",
+    "counter_offer",
     "expires"
   ],
   "properties": {
-    "counteroffer": {
+    "counter_offer": {
       "type": "array",
       "items": {
         "$ref": "#/definitions/Coin"
